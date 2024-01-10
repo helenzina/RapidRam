@@ -1,0 +1,124 @@
+body{
+  min-height: 50rem;
+}
+
+.navbar {
+  margin-bottom: 50px;
+  border-radius: 0;
+}
+
+footer {
+  background-color: #333;
+  padding: 5px 25px 25px 25px;
+  color: white;
+}
+
+.panel-primary>.panel-heading {
+  color: #fff;
+  background-color: #333;
+  border-color: #333;
+}
+
+.panel{
+  border-color: #333;
+}
+
+.sidenav{
+  height: 100%;
+}
+
+.nav-tabs>li>a{
+  color: #333;
+  background-color: #fff;
+}
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
+  color: #fff;
+  cursor: default;
+  background-color: #333;
+  border: 1px solid #333;
+  border-bottom-color: transparent;
+}
+
+#products>a {
+  color: #333;
+  text-decoration: none;
+  font-weight: bold;
+  position: relative;
+  align-items: end;
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+#products>a:hover{
+  color: rgb(145, 145, 145);
+}
+
+.add, .save{
+  background-color: #333;
+  color: #fff;
+  border-color: #333;
+  position: relative;
+}
+
+.add{
+  margin-bottom: 1rem;
+}
+
+.dataTables_wrapper{
+  margin: 0 0 2rem 0;
+}
+
+.add:hover, .save:hover{
+  color: gray;
+}
+
+#sidebar {
+  background-color: #f8f9fa;
+  border: 1px solid #333;
+  padding: 20px;
+}
+
+.nav-item label {
+  font-weight: bold;
+}
+
+.form-check {
+  margin-bottom: 0.5rem;
+}
+
+.form-control.form-control-sm{
+  width: auto;
+}
+
+img.img-style{
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+button.bag {
+  color: black;
+  background-color: transparent;
+  font-size: 2rem;
+  display: flex;
+  padding: 0 5px;
+  border-color: transparent transparent;
+  position: relative;
+}
+
+button.filters {
+    font-size: 3rem;
+    margin-left: 100rem;
+}
+
+@media screen and (max-width: 769px){
+  .filters{
+    position: fixed;
+    display: contents;
+  }
+}
+
+
+
