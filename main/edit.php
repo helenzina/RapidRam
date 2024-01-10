@@ -3,7 +3,7 @@ session_start();
 
 $mysqli = require __DIR__ . "/conn.php";
 
-if (isset($_POST["editBtn"])) {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["editBtn"])) {
     // Retrieve form data
     $productId = $_POST['product_id'];
     $brand = $_POST['brand'];

@@ -101,8 +101,7 @@ img.img-style{
 button.bag {
   color: black;
   background-color: transparent;
-  font-size: 2rem;
-  display: flex;
+  font-size: 1.5rem;
   padding: 0 5px;
   border-color: transparent transparent;
   position: relative;
@@ -110,7 +109,25 @@ button.bag {
 
 button.filters {
     font-size: 3rem;
-    margin-left: 100rem;
+}
+
+div.dataTables_length{
+  margin-bottom: 1rem;
+}
+
+#cart-container {
+  position: fixed;
+  top: 0;
+  right: -300px;
+  width: 300px;
+  height: 100%;
+  background-color: #f8f9fa;
+  transition: right 0.3s ease-in-out;
+  overflow-y: auto;
+}
+
+#cart-content {
+  padding: 20px;
 }
 
 @media screen and (max-width: 769px){
