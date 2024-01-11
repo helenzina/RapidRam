@@ -7,7 +7,7 @@ if (!isset($_SESSION['cart'])) {
   $_SESSION['cart'] = array();
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["checkoutBtn"])) {
+if (isset($_GET['success']) && $_GET['success'] == 1) {
   echo '<script>alert("Thank you for your order!")</script>';
 }
 
@@ -137,7 +137,7 @@ if ($result->num_rows > 0) {
           </h1>
         </div>
         <div class="modal-body">
-          <form id="checkoutForm" method="post">
+          <form action="checkout.php" id="checkoutForm" method="post">
             <div class="mb-3">
               <label for="firstname" class="form-label">First name</label>
               <input type="text" required class="form-control" name="firstname" id="firstname"
@@ -161,10 +161,10 @@ if ($result->num_rows > 0) {
               <div id="telHelp" class="form-text"></div>
             </div>
             <div class="mb-3">
-              <label for="address" class="form-label">Delivery Address</label>
-              <input type="text" required class="form-control" name="address" id="address"
-                aria-describedby="addressHelp">
-              <div id="addressHelp" class="form-text"></div>
+              <label for="delivery_address" class="form-label">Delivery Address</label>
+              <input type="text" required class="form-control" name="delivery_address" id="delivery_address"
+                aria-describedby="delivery_addressHelp">
+              <div id="delivery_addressHelp" class="form-text"></div>
             </div>
             <div class="mb-3">
               <label for="products" class="form-label">Products</label>
@@ -172,6 +172,7 @@ if ($result->num_rows > 0) {
                 aria-describedby="productsHelp">
               <div id="productsHelp" class="form-text"></div>
             </div>
+            <input type="hidden" name="product_ids_and_quantities" id="productIdsAndQuantitiesInput" />
             <div class="mb-3">
               <label for="total" class="form-label">Total</label>
               <input type="text" readonly class="form-control" name="total" id="totalInput"
@@ -264,141 +265,157 @@ if ($result->num_rows > 0) {
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
     crossorigin="anonymous"></script>
-    <script>
-document.addEventListener("DOMContentLoaded", async function () {
-    const productContainer = document.getElementById("product-container");
-    const cartContainer = document.querySelector(".offcanvas-body");
-    const openCartBtn = document.getElementById("open-cart-btn");
-    const cartList = document.getElementById("cart");
-    const totalSpan = document.getElementById("total");
-    let total = 0;
 
-    // Function to update the cart and total
-    function updateCart(product, price, quantity) {
+  <script>
+    document.addEventListener("DOMContentLoaded", async function () {
+      const productContainer = document.getElementById("product-container");
+      const cartContainer = document.querySelector(".offcanvas-body");
+      const openCartBtn = document.getElementById("open-cart-btn");
+      const cartList = document.getElementById("cart");
+      const totalSpan = document.getElementById("total");
+      let total = 0;
+
+      const productQuantities = {};
+
+
+      // Function to update the cart and total
+      function updateCart(product, price, quantity) {
         const existingItem = Array.from(cartList.children).find(item => item.dataset.product === product);
 
         if (existingItem) {
-            // If the product is already in the cart, update the quantity
-            const quantitySpan = existingItem.querySelector(".quantity");
-            quantitySpan.textContent = quantity;
+          // If the product is already in the cart, update the quantity
+          const quantitySpan = existingItem.querySelector(".quantity");
+          quantitySpan.textContent = quantity;
         } else {
-            // If the product is not in the cart, add it
-            const listItem = document.createElement("li");
-            listItem.classList.add("list-group-item");
-            listItem.dataset.product = product;
-            listItem.dataset.price = price;
-            listItem.innerHTML = `
+          // If the product is not in the cart, add it
+          const listItem = document.createElement("li");
+          listItem.classList.add("list-group-item");
+          listItem.dataset.product = product;
+          listItem.dataset.price = price;
+          listItem.innerHTML = `
                 ${product} - $${new Intl.NumberFormat().format(price)} 
                 <button class="btn btn-outline-secondary btn-sm mx-2 add-item">+</button> 
                 <span class="quantity">${quantity}</span> 
                 <button class="btn btn-outline-secondary btn-sm remove-item">-</button>
             `;
-            cartList.appendChild(listItem);
+          cartList.appendChild(listItem);
         }
 
         // Update total
         total += price * quantity;
         totalSpan.textContent = new Intl.NumberFormat().format(total);
-        
+
+        if (productQuantities[product]) {
+          productQuantities[product] += quantity;
+        } else {
+          productQuantities[product] = quantity;
+        }
+
+        // Update the hidden input field with product IDs and quantities
+        document.getElementById('productIdsAndQuantitiesInput').value = JSON.stringify(productQuantities);
+
         // Update the cart array in the session
         updateSessionCart();
-    }
+      }
 
-    // Function to update the cart array in the session
-    function updateSessionCart() {
+      // Function to update the cart array in the session
+      function updateSessionCart() {
         const cartItems = Array.from(cartList.children).map(item => ({
-            product: item.dataset.product,
-            price: parseFloat(item.dataset.price),
-            quantity: parseInt(item.querySelector(".quantity").textContent),
+          product: item.dataset.product,
+          price: parseFloat(item.dataset.price),
+          quantity: parseInt(item.querySelector(".quantity").textContent),
         }));
         // Update the cart array in the session
         <?php echo "const sessionId = '" . session_id() . "';"; ?>
         fetch('update-cart.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ sessionId, cartItems }),
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ sessionId, cartItems }),
         });
-    }
+      }
 
-    // Event listener for adding products to the cart
-    productContainer.addEventListener("click", async function (event) {
+      // Event listener for adding products to the cart
+      productContainer.addEventListener("click", async function (event) {
         if (event.target.classList.contains("add-to-cart")) {
-            const product = event.target.getAttribute("data-product");
-            const price = parseFloat(event.target.getAttribute("data-price"));
+          const product = event.target.getAttribute("data-product");
+          const price = parseFloat(event.target.getAttribute("data-price"));
 
-            // For simplicity, let's assume quantity is 1
-            const quantity = 1;
+          // For simplicity, let's assume quantity is 1
+          const quantity = 1;
 
-            updateCart(product, price, quantity);
+          // Update the quantity in productQuantities
+          if (productQuantities[product]) {
+            productQuantities[product] += quantity;
+          } else {
+            productQuantities[product] = quantity;
+          }
 
-            // Open the cart using Bootstrap offcanvas method
-            const offcanvas = new bootstrap.Offcanvas(document.getElementById("offcanvasExample"));
-            offcanvas.show();
+          updateCart(product, price, quantity);
+
+          // Open the cart using Bootstrap offcanvas method
+          const offcanvas = new bootstrap.Offcanvas(document.getElementById("offcanvasExample"));
+          offcanvas.show();
         }
-    });
+      });
 
-    // Event listener for updating cart items
-    document.addEventListener("click", async function (event) {
+
+      // Event listener for updating cart items
+      document.addEventListener("click", async function (event) {
         if (event.target.classList.contains("add-item")) {
-            const listItem = event.target.closest("li");
-            const price = parseFloat(listItem.dataset.price);
+          const listItem = event.target.closest("li");
+          const price = parseFloat(listItem.dataset.price);
 
-            // Update quantity
-            const quantitySpan = listItem.querySelector(".quantity");
-            const quantity = parseInt(quantitySpan.textContent) + 1;
-            quantitySpan.textContent = quantity;
+          // Update quantity
+          const quantitySpan = listItem.querySelector(".quantity");
+          const quantity = parseInt(quantitySpan.textContent) + 1;
+          quantitySpan.textContent = quantity;
 
-            // Update total
-            total += price;
-            totalSpan.textContent = new Intl.NumberFormat().format(total);
+          // Update total
+          total += price;
+          totalSpan.textContent = new Intl.NumberFormat().format(total);
 
-            // Update the cart array in the session
-            updateSessionCart();
+          // Update the cart array in the session
+          updateSessionCart();
         } else if (event.target.classList.contains("remove-item")) {
-            const listItem = event.target.closest("li");
-            const price = parseFloat(listItem.dataset.price);
+          const listItem = event.target.closest("li");
+          const price = parseFloat(listItem.dataset.price);
 
-            // Update quantity
-            const quantitySpan = listItem.querySelector(".quantity");
-            const quantity = parseInt(quantitySpan.textContent) - 1;
+          // Update quantity
+          const quantitySpan = listItem.querySelector(".quantity");
+          const quantity = parseInt(quantitySpan.textContent) - 1;
 
-            if (quantity === 0) {
-                // If quantity is zero, remove the item from the cart
-                listItem.remove();
-            } else {
-                quantitySpan.textContent = quantity;
-            }
+          if (quantity === 0) {
+            // If quantity is zero, remove the item from the cart
+            listItem.remove();
+          } else {
+            quantitySpan.textContent = quantity;
+          }
 
-            // Update total
-            total -= price;
-            totalSpan.textContent = new Intl.NumberFormat().format(total);
+          // Update total
+          total -= price;
+          totalSpan.textContent = new Intl.NumberFormat().format(total);
 
-            // Update the cart array in the session
-            updateSessionCart();
+          // Update the cart array in the session
+          updateSessionCart();
         }
-    });
+      });
 
-    // Event listener for opening checkout modal
-    $('#checkoutModal').on('show.bs.modal', function (event) {
+      // Event listener for opening checkout modal
+      $('#checkoutModal').on('show.bs.modal', function (event) {
         // Get the product IDs and total from the cart and set them in the hidden fields
-        const productIds = Array.from(cartList.children).map(item => item.dataset.product);
+        const productIds = Object.keys(productQuantities);
         const totalValue = total.toFixed(2);
 
-        document.getElementById('productsInput').value = productIds.join(', ');
+        document.getElementById('productsInput').value = productIds.map(id => productQuantities[id] + ' x #' + id).join(', ');
         document.getElementById('totalInput').value = totalValue;
-    });
 
-    // Event listener for submitting the checkout form
-    const checkoutForm = document.getElementById("checkoutForm");
-    checkoutForm.addEventListener("submit", async function (event) {
-        // Prevent the default form submission
-        event.preventDefault();
-        alert("Thank you for your order!");
+        // Set the product IDs and quantities in the hidden field
+        document.getElementById('productIdsAndQuantitiesInput').value = JSON.stringify(productQuantities);
+      });
     });
-});
-</script>
+  </script>
 
 </body>
 

@@ -27,7 +27,18 @@ if ($result->num_rows > 0) {
     $rows = array();
 }
 
-// Close the connection
+$mysqli->close();
+
+$mysqli = require __DIR__ . "/conn.php";
+$query = "SELECT * FROM orders";
+$result = $mysqli->query($query);
+
+if ($result->num_rows > 0) {
+    $orders = $result->fetch_all(MYSQLI_ASSOC);
+} else {
+    $orders = array();
+}
+
 $mysqli->close();
 
 ?>
@@ -393,208 +404,19 @@ $mysqli->close();
                                 </tr>
                             </thead>
                             <tbody>
+                            <?php foreach ($orders as $order): ?>
                                 <tr>
-                                    <th scope="row">1</th>
-                                    <td>Mark</td>
-                                    <td>Otto</td>
-                                    <td>mark@otto.com</td>
-                                    <td>+12323143</td>
-                                    <td>New York, NY 10012, US</td>
-                                    <td>1, 20, 35</td>
-                                    <td>150$</td>
+                                    <th scope="row"><?php echo $order['id']; ?></th>
+                                    <td><?php echo $order['firstname']; ?></td>
+                                    <td><?php echo $order['lastname']; ?></td>
+                                    <td><?php echo $order['email']; ?></td>
+                                    <td><?php echo $order['tel']; ?></td>
+                                    <td><?php echo $order['delivery_address']; ?></td>
+                                    <td><?php echo $order['products']; ?></td>
+                                    <td><?php echo $order['total']; ?></td>
                                     <td>Delivered</td>
                                 </tr>
-                                <tr>
-                                    <th scope="row">2</th>
-                                    <td>Jane</td>
-                                    <td>Doe</td>
-                                    <td>jane@doe.com</td>
-                                    <td>+98765432</td>
-                                    <td>Los Angeles, CA 90001, US</td>
-                                    <td>5, 15, 28</td>
-                                    <td>200$</td>
-                                    <td>Processing</td>
-                                </tr>
-
-                                <tr>
-                                    <th scope="row">3</th>
-                                    <td>John</td>
-                                    <td>Smith</td>
-                                    <td>john@smith.com</td>
-                                    <td>+45678901</td>
-                                    <td>Chicago, IL 60601, US</td>
-                                    <td>8, 19, 42</td>
-                                    <td>120$</td>
-                                    <td>Shipped</td>
-                                </tr>
-
-                                <tr>
-                                    <th scope="row">4</th>
-                                    <td>Alice</td>
-                                    <td>Johnson</td>
-                                    <td>alice@johnson.com</td>
-                                    <td>+11223344</td>
-                                    <td>San Francisco, CA 94105, US</td>
-                                    <td>3, 10, 25</td>
-                                    <td>180$</td>
-                                    <td>Delivered</td>
-                                </tr>
-
-                                <tr>
-                                    <th scope="row">5</th>
-                                    <td>Robert</td>
-                                    <td>Williams</td>
-                                    <td>robert@williams.com</td>
-                                    <td>+99887766</td>
-                                    <td>Miami, FL 33101, US</td>
-                                    <td>12, 30, 48</td>
-                                    <td>250$</td>
-                                    <td>Processing</td>
-                                </tr>
-
-                                <tr>
-                                    <th scope="row">6</th>
-                                    <td>Emily</td>
-                                    <td>Anderson</td>
-                                    <td>emily@anderson.com</td>
-                                    <td>+55443322</td>
-                                    <td>Seattle, WA 98101, US</td>
-                                    <td>7, 18, 36</td>
-                                    <td>160$</td>
-                                    <td>Shipped</td>
-                                </tr>
-
-                                <tr>
-                                    <th scope="row">7</th>
-                                    <td>David</td>
-                                    <td>Miller</td>
-                                    <td>david@millter.com</td>
-                                    <td>+66778899</td>
-                                    <td>Denver, CO 80202, US</td>
-                                    <td>2, 14, 30</td>
-                                    <td>190$</td>
-                                    <td>Delivered</td>
-                                </tr>
-
-                                <tr>
-                                    <th scope="row">8</th>
-                                    <td>Sarah</td>
-                                    <td>Clark</td>
-                                    <td>sarah@clark.com</td>
-                                    <td>+33445566</td>
-                                    <td>Phoenix, AZ 85001, US</td>
-                                    <td>9, 22, 40</td>
-                                    <td>140$</td>
-                                    <td>Processing</td>
-                                </tr>
-
-                                <tr>
-                                    <th scope="row">9</th>
-                                    <td>Michael</td>
-                                    <td>Moore</td>
-                                    <td>michael@moore.com</td>
-                                    <td>+77889900</td>
-                                    <td>Atlanta, GA 30301, US</td>
-                                    <td>6, 16, 33</td>
-                                    <td>210$</td>
-                                    <td>Shipped</td>
-                                </tr>
-
-                                <tr>
-                                    <th scope="row">10</th>
-                                    <td>Olivia</td>
-                                    <td>Roberts</td>
-                                    <td>olivia@roberts.com</td>
-                                    <td>+11223344</td>
-                                    <td>Dallas, TX 75201, US</td>
-                                    <td>11, 26, 45</td>
-                                    <td>175$</td>
-                                    <td>Delivered</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">11</th>
-                                    <td>Christopher</td>
-                                    <td>Turner</td>
-                                    <td>chris@turner.com</td>
-                                    <td>+99887766</td>
-                                    <td>Houston, TX 77002, US</td>
-                                    <td>4, 17, 29</td>
-                                    <td>195$</td>
-                                    <td>Processing</td>
-                                </tr>
-
-                                <tr>
-                                    <th scope="row">12</th>
-                                    <td>Emma</td>
-                                    <td>Collins</td>
-                                    <td>emma@collins.com</td>
-                                    <td>+44556677</td>
-                                    <td>Philadelphia, PA 19101, US</td>
-                                    <td>10, 23, 38</td>
-                                    <td>165$</td>
-                                    <td>Shipped</td>
-                                </tr>
-
-                                <tr>
-                                    <th scope="row">13</th>
-                                    <td>Jason</td>
-                                    <td>Ward</td>
-                                    <td>jason@ward.com</td>
-                                    <td>+22334455</td>
-                                    <td>Detroit, MI 48201, US</td>
-                                    <td>8, 21, 37</td>
-                                    <td>180$</td>
-                                    <td>Delivered</td>
-                                </tr>
-
-                                <tr>
-                                    <th scope="row">14</th>
-                                    <td>Mia</td>
-                                    <td>Stewart</td>
-                                    <td>mia@stewart.com</td>
-                                    <td>+77889900</td>
-                                    <td>Charlotte, NC 28201, US</td>
-                                    <td>5, 15, 32</td>
-                                    <td>210$</td>
-                                    <td>Processing</td>
-                                </tr>
-
-                                <tr>
-                                    <th scope="row">15</th>
-                                    <td>Andrew</td>
-                                    <td>Hill</td>
-                                    <td>andrew@hill.com</td>
-                                    <td>+11223344</td>
-                                    <td>San Diego, CA 92101, US</td>
-                                    <td>12, 28, 43</td>
-                                    <td>220$</td>
-                                    <td>Shipped</td>
-                                </tr>
-
-                                <tr>
-                                    <th scope="row">16</th>
-                                    <td>Austin</td>
-                                    <td>Taylor</td>
-                                    <td>austin@taylor.com</td>
-                                    <td>+99887766</td>
-                                    <td>Austin, TX 78701, US</td>
-                                    <td>7, 19, 34</td>
-                                    <td>185$</td>
-                                    <td>Processing</td>
-                                </tr>
-
-                                <tr>
-                                    <th scope="row">17</th>
-                                    <td>Houston</td>
-                                    <td>Lee</td>
-                                    <td>houston@lee.com</td>
-                                    <td>+44556677</td>
-                                    <td>Houston, TX 77001, US</td>
-                                    <td>11, 25, 39</td>
-                                    <td>200$</td>
-                                    <td>Shipped</td>
-                                </tr>
-
+                            <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>
