@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Εξυπηρετητής: 127.0.0.1
--- Χρόνος δημιουργίας: 07 Ιαν 2024 στις 20:00:33
+-- Χρόνος δημιουργίας: 11 Ιαν 2024 στις 21:52:09
 -- Έκδοση διακομιστή: 10.4.32-MariaDB
 -- Έκδοση PHP: 8.2.12
 
@@ -20,6 +20,31 @@ SET time_zone = "+00:00";
 --
 -- Βάση δεδομένων: `ram_db`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Δομή πίνακα για τον πίνακα `orders`
+--
+
+CREATE TABLE `orders` (
+  `id` int(11) NOT NULL,
+  `firstname` varchar(255) NOT NULL,
+  `lastname` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `tel` varchar(255) NOT NULL,
+  `delivery_address` varchar(255) NOT NULL,
+  `products` varchar(255) NOT NULL,
+  `total` double NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Άδειασμα δεδομένων του πίνακα `orders`
+--
+
+INSERT INTO `orders` (`id`, `firstname`, `lastname`, `email`, `tel`, `delivery_address`, `products`, `total`) VALUES
+(1, 'Helen', 'Zina', 'helenz1@windowslive.com', '+45345', 'gfdgdf', '1xCorsair Vengeance RGB Pro 32GB 3200MHz #3, 1xPatriot Viper Steel RGB 16GB 3600MHz #61', 245),
+(2, 'Mary', 'Smith', 'mary@smith.com', '+234324', 'fdgreg', '2xCorsair Vengeance RGB Pro 32GB 3200MHz #3, 2xCorsair Vengeance RGB Pro 32GB 3000MHz #6', 330);
 
 -- --------------------------------------------------------
 
@@ -123,6 +148,12 @@ INSERT INTO `ram` (`product_id`, `brand`, `model`, `capacity`, `channel`, `speed
 --
 
 --
+-- Ευρετήρια για πίνακα `orders`
+--
+ALTER TABLE `orders`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Ευρετήρια για πίνακα `ram`
 --
 ALTER TABLE `ram`
@@ -131,6 +162,12 @@ ALTER TABLE `ram`
 --
 -- AUTO_INCREMENT για άχρηστους πίνακες
 --
+
+--
+-- AUTO_INCREMENT για πίνακα `orders`
+--
+ALTER TABLE `orders`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT για πίνακα `ram`
