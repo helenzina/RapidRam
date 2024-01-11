@@ -115,7 +115,7 @@ $mysqli->close();
                             <div class="row">
                                 <div class="col-md-6">
                                     <!-- Chart canvas will be placed here -->
-                                    <canvas id="salesChart" width="100rem" style="display: flex;"></canvas>
+                                    <canvas id="salesChart" width="100rem" height="74rem" style="display: flex;"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -606,7 +606,7 @@ $mysqli->close();
     <footer class="container-fluid text-center">
         <h6 class="text-uppercase mb-4 font-weight-bold">Contact</h6>
         <p><i class="bi bi-house-fill"></i> New York, NY 10012, US</p>
-        <p><i class="bi bi-envelope-fill"></i> info@gmail.com</p>
+        <p><i class="bi bi-envelope-fill"></i> rapidram@info.com</p>
         <p><i class="bi bi-telephone"></i> + 01 234 567 89</p>
         <hr>
         <i class="bi bi-c-circle"></i>
@@ -615,6 +615,7 @@ $mysqli->close();
 
     <script src="../js/admin.js"></script>
     <script>
+
         $(document).ready(function () {
             // Handle the click event of the "Save changes" button in the edit modal
             $('.editBtn').click(function () {

@@ -7,8 +7,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["checkoutBtn"])) {
     echo '<script>alert("Thank you for your order!")</script>';
 }
 
+if (!isset($_SESSION['cart'])) {
+    $_SESSION['cart'] = array();
+}
+
 // Function to add a product to the cart
-function addToCart($product, $price) {
+function addToCart($product, $price)
+{
     $_SESSION['cart'][$product][] = $price;
 }
 
@@ -82,44 +87,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!empty($whereClause)) {
         $query .= " WHERE " . implode(" AND ", $whereClause);
     }
-
-    // Store filter parameters in the session
-    $_SESSION['filter_params'] = $_POST;
 }
 
+// Execute the query after applying filters
 $result = $mysqli->query($query);
 
 if ($result->num_rows > 0) {
     $rows = $result->fetch_all(MYSQLI_ASSOC);
+
+    // Pagination
+    $rows_per_page = 12;
+    $total_pages = ceil(count($rows) / $rows_per_page);
+
+    // Get current page from the URL
+    $page = isset($_GET['page']) ? $_GET['page'] : 1;
+    $page = max(1, min($page, $total_pages));
+
+    // Calculate the offset for fetching rows
+    $start = ($page - 1) * $rows_per_page;
+
+    // Modify the query to include the LIMIT clause
+    $query .= " LIMIT $start, $rows_per_page";
+
+    $result = $mysqli->query($query);
+
+    if ($result->num_rows > 0) {
+        $rows = $result->fetch_all(MYSQLI_ASSOC);
+    } else {
+        $rows = array();
+    }
 } else {
     $rows = array();
 }
 
-// Pagination
-$rows_per_page = 12;
-$total_pages = ceil(count($rows) / $rows_per_page);
-
-// Get current page from the URL
-$page = isset($_GET['page']) ? $_GET['page'] : 1;
-$page = max(1, min($page, $total_pages));
-
-// Calculate the offset for fetching rows
-$start = ($page - 1) * $rows_per_page;
-
-// Modify the query to include the LIMIT clause
-$query .= " LIMIT $start, $rows_per_page";
-
-$result = $mysqli->query($query);
-
-if ($result->num_rows > 0) {
-    $rows = $result->fetch_all(MYSQLI_ASSOC);
-} else {
-    $rows = array();
-}
-
-
-
+// Display the products or handle accordingly
 ?>
+
 
 
 <!DOCTYPE html>
@@ -308,7 +311,7 @@ if ($result->num_rows > 0) {
             </div>
 
             <div class="offcanvas-body">
-            <form action="<?php echo $_SERVER['PHP_SELF'] . '?page=' . $page; ?>" method="post">
+                <form action="<?php echo $_SERVER['PHP_SELF'] . '?page=' . $page; ?>" method="post">
 
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -395,7 +398,7 @@ if ($result->num_rows > 0) {
             <!-- Main content area -->
             <main class="col-12 px-md-4">
                 <div class="container">
-                    <div class="row">
+                    <div class="row" id="product-container">
                         <?php foreach ($rows as $row) { ?>
                             <div class="col-sm-3 mb-2">
                                 <div class="card" style="border-color: black;">
@@ -443,10 +446,10 @@ if ($result->num_rows > 0) {
                             echo '<li class="page-item disabled"><span class="page-link">Previous</span></li>';
                         }
 
-// Display page numbers with filters
-for ($i = 1; $i <= $total_pages; $i++) {
-    echo '<li class="page-item ' . ($i == $page ? 'active' : '') . '"><a class="page-link" href="?page=' . $i . '&' . http_build_query($_POST) . '">' . $i . '</a></li>';
-}
+                        // Display page numbers with filters
+                        for ($i = 1; $i <= $total_pages; $i++) {
+                            echo '<li class="page-item ' . ($i == $page ? 'active' : '') . '"><a class="page-link" href="?page=' . $i . '&' . http_build_query($_POST) . '">' . $i . '</a></li>';
+                        }
 
 
                         // Display Next button
@@ -466,7 +469,7 @@ for ($i = 1; $i <= $total_pages; $i++) {
     <footer class="container-fluid text-center">
         <h6 class="text-uppercase mb-4 font-weight-bold">Contact</h6>
         <p><i class="bi bi-house-fill"></i> New York, NY 10012, US</p>
-        <p><i class="bi bi-envelope-fill"></i> info@gmail.com</p>
+        <p><i class="bi bi-envelope-fill"></i> rapidram@info.com</p>
         <p><i class="bi bi-telephone"></i> + 01 234 567 89</p>
         <hr>
         <i class="bi bi-c-circle"></i>
@@ -479,52 +482,84 @@ for ($i = 1; $i <= $total_pages; $i++) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
-
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", async function () {
+            const productContainer = document.getElementById("product-container");
             const cartContainer = document.querySelector(".offcanvas-body");
             const openCartBtn = document.getElementById("open-cart-btn");
             const cartList = document.getElementById("cart");
             const totalSpan = document.getElementById("total");
             let total = 0;
 
-            document.addEventListener("click", async function (event) {
+            // Function to update the cart and total
+            function updateCart(product, price, quantity) {
+                const existingItem = Array.from(cartList.children).find(item => item.dataset.product === product);
+
+                if (existingItem) {
+                    // If the product is already in the cart, update the quantity
+                    const quantitySpan = existingItem.querySelector(".quantity");
+                    quantitySpan.textContent = quantity;
+                } else {
+                    // If the product is not in the cart, add it
+                    const listItem = document.createElement("li");
+                    listItem.classList.add("list-group-item");
+                    listItem.dataset.product = product;
+                    listItem.dataset.price = price;
+                    listItem.innerHTML = `
+                ${product} - $${new Intl.NumberFormat().format(price)} 
+                <button class="btn btn-outline-secondary btn-sm mx-2 add-item">+</button> 
+                <span class="quantity">${quantity}</span> 
+                <button class="btn btn-outline-secondary btn-sm remove-item">-</button>
+            `;
+                    cartList.appendChild(listItem);
+                }
+
+                // Update total
+                total += price * quantity;
+                totalSpan.textContent = new Intl.NumberFormat().format(total);
+
+                // Update the cart array in the session
+                updateSessionCart();
+            }
+
+            // Function to update the cart array in the session
+            function updateSessionCart() {
+                const cartItems = Array.from(cartList.children).map(item => ({
+                    product: item.dataset.product,
+                    price: parseFloat(item.dataset.price),
+                    quantity: parseInt(item.querySelector(".quantity").textContent),
+                }));
+                // Update the cart array in the session
+                <?php echo "const sessionId = '" . session_id() . "';"; ?>
+                fetch('update-cart.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ sessionId, cartItems }),
+                });
+            }
+
+            // Event listener for adding products to the cart
+            productContainer.addEventListener("click", async function (event) {
                 if (event.target.classList.contains("add-to-cart")) {
                     const product = event.target.getAttribute("data-product");
                     const price = parseFloat(event.target.getAttribute("data-price"));
 
-                    // Check if the product is already in the cart
-                    const existingItem = Array.from(cartList.children).find(item => item.dataset.product === product);
+                    // For simplicity, let's assume quantity is 1
+                    const quantity = 1;
 
-                    if (existingItem) {
-                        // If the product is already in the cart, update the quantity
-                        const quantitySpan = existingItem.querySelector(".quantity");
-                        const quantity = parseInt(quantitySpan.textContent) + 1;
-                        quantitySpan.textContent = quantity;
-                    } else {
-                        // If the product is not in the cart, add it
-                        const listItem = document.createElement("li");
-                        listItem.classList.add("list-group-item");
-                        listItem.dataset.product = product;
-                        listItem.dataset.price = price;
-                        listItem.innerHTML = `
-            ${product} - $${price.toFixed(2)} 
-            <button class="btn btn-outline-secondary btn-sm mx-2 add-item">+</button> 
-            <span class="quantity">1</span> 
-            <button class="btn btn-outline-secondary btn-sm remove-item">-</button>
-          `;
-
-                        cartList.appendChild(listItem);
-                    }
-
-                    // Update total
-                    total += price;
-                    totalSpan.textContent = total.toFixed(2);
+                    updateCart(product, price, quantity);
 
                     // Open the cart using Bootstrap offcanvas method
                     const offcanvas = new bootstrap.Offcanvas(document.getElementById("offcanvasExample"));
                     offcanvas.show();
-                } else if (event.target.classList.contains("add-item")) {
+                }
+            });
+
+            // Event listener for updating cart items
+            document.addEventListener("click", async function (event) {
+                if (event.target.classList.contains("add-item")) {
                     const listItem = event.target.closest("li");
                     const price = parseFloat(listItem.dataset.price);
 
@@ -535,7 +570,10 @@ for ($i = 1; $i <= $total_pages; $i++) {
 
                     // Update total
                     total += price;
-                    totalSpan.textContent = total.toFixed(2);
+                    totalSpan.textContent = new Intl.NumberFormat().format(total);
+
+                    // Update the cart array in the session
+                    updateSessionCart();
                 } else if (event.target.classList.contains("remove-item")) {
                     const listItem = event.target.closest("li");
                     const price = parseFloat(listItem.dataset.price);
@@ -553,10 +591,14 @@ for ($i = 1; $i <= $total_pages; $i++) {
 
                     // Update total
                     total -= price;
-                    totalSpan.textContent = total.toFixed(2);
+                    totalSpan.textContent = new Intl.NumberFormat().format(total);
+
+                    // Update the cart array in the session
+                    updateSessionCart();
                 }
             });
 
+            // Event listener for opening checkout modal
             $('#checkoutModal').on('show.bs.modal', function (event) {
                 // Get the product IDs and total from the cart and set them in the hidden fields
                 const productIds = Array.from(cartList.children).map(item => item.dataset.product);
@@ -566,16 +608,13 @@ for ($i = 1; $i <= $total_pages; $i++) {
                 document.getElementById('totalInput').value = totalValue;
             });
 
-            document.addEventListener("DOMContentLoaded", async function () {
-                const checkoutForm = document.getElementById("checkoutForm");
-
-                checkoutForm.addEventListener("submit", async function (event) {
-                    // Prevent the default form submission
-                    event.preventDefault();
-                    alert("Thank you for your order!");
-                });
+            // Event listener for submitting the checkout form
+            const checkoutForm = document.getElementById("checkoutForm");
+            checkoutForm.addEventListener("submit", async function (event) {
+                // Prevent the default form submission
+                event.preventDefault();
+                alert("Thank you for your order!");
             });
-
         });
     </script>
 
