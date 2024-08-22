@@ -76,15 +76,15 @@ To run the RapidRam app, follow these steps:
     ```
 3. **Purchase anything you like considering deals (-20%) in the index page or if you are looking for something specific, try applying filters in the products page till you find it.**
 
-4. **Optional: If you want to try the administration panel, use the following credentials for simplicity:**.
+4. **Optional: If you want to try the administration panel, use the following credentials for simplicity:** <br>
    **Username**
-  ```sh
-   admin
-   ```
+    ```sh
+    admin
+    ```
    **Password**
-   ```sh
-   1234
-   ```
+    ```sh
+    1234
+    ```
 
 
  ## Usage
