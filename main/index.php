@@ -11,6 +11,24 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
   echo '<script>alert("Thank you for your order!")</script>';
 }
 
+if (isset($_POST['login'])) {
+  $username = htmlspecialchars($_POST['username']);
+  $password = htmlspecialchars($_POST['password']);
+
+  if ($username === "admin" && $password === "1234") {
+    $_SESSION["username"] = $username;
+    $_SESSION["password"] = $password;
+    header("Location: admin.php");
+    exit;
+  } else {
+    echo '<script>
+    alert("Username or password is incorrect. Please try again.");
+    window.location.href = "index.php";
+    </script>';
+    exit;
+  }
+}
+
 $query = "SELECT * FROM ram";
 $result = $mysqli->query($query);
 
@@ -35,6 +53,8 @@ if ($result->num_rows > 0) {
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link rel="icon" href="../ram.svg">
+
 
 </head>
 
@@ -86,7 +106,7 @@ if ($result->num_rows > 0) {
             </h1>
           </div>
           <div class="modal-body">
-            <form action="admin.php" method="post" id="loginForm">
+            <form method="post" id="loginForm">
               <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
                 <input type="text" class="form-control" id="username" name="username" required>
@@ -96,7 +116,7 @@ if ($result->num_rows > 0) {
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-dark save">Submit</button>
+                <button type="submit" name="login" class="btn btn-dark save">Submit</button>
               </div>
             </form>
           </div>
@@ -120,7 +140,7 @@ if ($result->num_rows > 0) {
         <h6>Total: $<span id="total">0.00</span></h6>
       </div>
       <div class="d-grid gap-2 d-md-flex justify-content-md-end" style="margin-top: 35rem">
-        <button type="button" class="btn btn-dark add" data-bs-toggle="modal" data-bs-target="#checkoutModal">
+        <button type="button" class="btn btn-dark add checkout" data-bs-toggle="modal" data-bs-target="#checkoutModal">
           <i class="bi bi-bag-check"></i>
           Checkout
         </button>
@@ -152,12 +172,13 @@ if ($result->num_rows > 0) {
             </div>
             <div class="mb-3">
               <label for="email" class="form-label">Email address</label>
-              <input type="email" required class="form-control" name="email" id="email" aria-describedby="emailHelp">
+              <input type="email" required class="form-control" name="email" id="email" onchange="onChangeEmail()" aria-describedby="emailHelp">
               <div id="emailHelp" class="form-text"></div>
             </div>
             <div class="mb-3">
               <label for="tel" class="form-label">Phone</label>
-              <input type="text" required class="form-control" name="tel" id="tel" aria-describedby="telHelp">
+              <input type="tel" required class="form-control" name="tel" id="tel"
+                title="Phone number must be 10 digits." onchange="onChangeTel()" aria-describedby="telHelp">
               <div id="telHelp" class="form-text"></div>
             </div>
             <div class="mb-3">
@@ -194,55 +215,7 @@ if ($result->num_rows > 0) {
 
   <div class="container" id="home">
     <div class="row" id="product-container">
-      <?php
-      $selectedIndices = [2, 40, 6, 28, 60, 12];
-
-      foreach ($selectedIndices as $index) {
-        $row = $rows[$index];
-        ?>
-        <div class="col-sm-4 mb-2">
-          <div class="card" style="border-color: black;">
-            <div class="card-header" style="color: white; background-color: #333;">
-              DEAL -20%
-            </div>
-            <img src="../images/<?php echo $row["photo"]; ?>" class="card-img-top"
-              style="object-fit: contain; height: 100px; padding-top:5px;" alt="">
-            <div class="card-body">
-              <p class="card-text">
-                <span class="card-title" style="font-size: 1.2rem; font-weight: bold;">
-                  <?php echo $row['brand'] . ' ' . $row['model']; ?>
-                </span>
-                <br>
-                <?php echo $row['capacity']; ?> GB
-                <br>
-                <?php echo ($row['channel'] === "1") ? "Single Channel" : "Dual Channel"; ?>
-                <br>
-                <?php echo $row['speed']; ?> MHz
-                <br>
-                <span style="display: flex; flex-direction: row-reverse;">
-                  <span style="text-decoration: line-through;">
-                    <?php echo number_format($row['price'] * 1.2) . " $"; ?>
-                  </span>
-                  <span style="text-decoration: none; font-weight: bold;">
-                    <?php echo number_format($row['price']) . " $"; ?>
-                  </span>
-                </span>
-                <br>
-              </p>
-              <div class="d-grid gap-2 d-md-flex justify-content-md-end input-group">
-                <button class="btn btn-light add-to-cart" data-product="<?php echo $row['brand'] . ' ' . $row['model']
-                  . ' ' . $row['capacity'] . 'GB' . ' ' . $row['speed'] . 'MHz' . ' #' . $row['product_id'];
-                ?>" data-price="<?php echo $row['price']; ?>">
-                  <i class="bi bi-bag-fill"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <?php
-      }
-      ?>
-
+      <!-- Product cards will be added here dynamically -->
     </div>
   </div>
   <br>
@@ -260,162 +233,11 @@ if ($result->num_rows > 0) {
     <span>RapidRam</span>
   </footer>
 
-  <script src="../js/admin.js"></script>
+  <script src="../js/index.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
     crossorigin="anonymous"></script>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", async function () {
-      const productContainer = document.getElementById("product-container");
-      const cartContainer = document.querySelector(".offcanvas-body");
-      const openCartBtn = document.getElementById("open-cart-btn");
-      const cartList = document.getElementById("cart");
-      const totalSpan = document.getElementById("total");
-      let total = 0;
-
-      const productQuantities = {};
-
-
-      // Function to update the cart and total
-      function updateCart(product, price, quantity) {
-        const existingItem = Array.from(cartList.children).find(item => item.dataset.product === product);
-
-        if (existingItem) {
-          // If the product is already in the cart, update the quantity
-          const quantitySpan = existingItem.querySelector(".quantity");
-          quantitySpan.textContent = quantity;
-        } else {
-          // If the product is not in the cart, add it
-          const listItem = document.createElement("li");
-          listItem.classList.add("list-group-item");
-          listItem.dataset.product = product;
-          listItem.dataset.price = price;
-          listItem.innerHTML = `
-                ${product} - $${new Intl.NumberFormat().format(price)} 
-                <button class="btn btn-outline-secondary btn-sm mx-2 add-item">+</button> 
-                <span class="quantity">${quantity}</span> 
-                <button class="btn btn-outline-secondary btn-sm remove-item">-</button>
-            `;
-          cartList.appendChild(listItem);
-        }
-
-        // Update total
-        total += price * quantity;
-        totalSpan.textContent = new Intl.NumberFormat().format(total);
-
-        if (productQuantities[product]) {
-          productQuantities[product] += quantity;
-        } else {
-          productQuantities[product] = quantity;
-        }
-
-        // Update the hidden input field with product IDs and quantities
-        document.getElementById('productIdsAndQuantitiesInput').value = JSON.stringify(productQuantities);
-
-        // Update the cart array in the session
-        updateSessionCart();
-      }
-
-      // Function to update the cart array in the session
-      function updateSessionCart() {
-        const cartItems = Array.from(cartList.children).map(item => ({
-          product: item.dataset.product,
-          price: parseFloat(item.dataset.price),
-          quantity: parseInt(item.querySelector(".quantity").textContent),
-        }));
-        // Update the cart array in the session
-        <?php echo "const sessionId = '" . session_id() . "';"; ?>
-        fetch('update-cart.php', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ sessionId, cartItems }),
-        });
-      }
-
-      // Event listener for adding products to the cart
-      productContainer.addEventListener("click", async function (event) {
-        if (event.target.classList.contains("add-to-cart")) {
-          const product = event.target.getAttribute("data-product");
-          const price = parseFloat(event.target.getAttribute("data-price"));
-
-          // For simplicity, let's assume quantity is 1
-          const quantity = 1;
-
-          // Update the quantity in productQuantities
-          if (productQuantities[product]) {
-            productQuantities[product] += quantity;
-          } else {
-            productQuantities[product] = quantity;
-          }
-
-          updateCart(product, price, quantity);
-
-          // Open the cart using Bootstrap offcanvas method
-          const offcanvas = new bootstrap.Offcanvas(document.getElementById("offcanvasExample"));
-          offcanvas.show();
-        }
-      });
-
-
-      // Event listener for updating cart items
-      document.addEventListener("click", async function (event) {
-        if (event.target.classList.contains("add-item")) {
-          const listItem = event.target.closest("li");
-          const price = parseFloat(listItem.dataset.price);
-
-          // Update quantity
-          const quantitySpan = listItem.querySelector(".quantity");
-          const quantity = parseInt(quantitySpan.textContent) + 1;
-          quantitySpan.textContent = quantity;
-
-          // Update total
-          total += price;
-          totalSpan.textContent = new Intl.NumberFormat().format(total);
-
-          // Update the cart array in the session
-          updateSessionCart();
-        } else if (event.target.classList.contains("remove-item")) {
-          const listItem = event.target.closest("li");
-          const price = parseFloat(listItem.dataset.price);
-
-          // Update quantity
-          const quantitySpan = listItem.querySelector(".quantity");
-          const quantity = parseInt(quantitySpan.textContent) - 1;
-
-          if (quantity === 0) {
-            // If quantity is zero, remove the item from the cart
-            listItem.remove();
-          } else {
-            quantitySpan.textContent = quantity;
-          }
-
-          // Update total
-          total -= price;
-          totalSpan.textContent = new Intl.NumberFormat().format(total);
-
-          // Update the cart array in the session
-          updateSessionCart();
-        }
-      });
-
-      // Event listener for opening checkout modal
-      $('#checkoutModal').on('show.bs.modal', function (event) {
-        // Get the product IDs and total from the cart and set them in the hidden fields
-        const productIds = Object.keys(productQuantities);
-        const totalValue = total.toFixed(2);
-
-        document.getElementById('productsInput').value = productIds.map(id => productQuantities[id] + ' x #' + id).join(', ');
-        document.getElementById('totalInput').value = totalValue;
-
-        // Set the product IDs and quantities in the hidden field
-        document.getElementById('productIdsAndQuantitiesInput').value = JSON.stringify(productQuantities);
-      });
-    });
-  </script>
 
 </body>
 

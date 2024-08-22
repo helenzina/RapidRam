@@ -1,4 +1,4 @@
-body{
+body {
   min-height: 50rem;
 }
 
@@ -19,20 +19,22 @@ footer {
   border-color: #333;
 }
 
-.panel{
+.panel {
   border-color: #333;
 }
 
-.sidenav{
+.sidenav {
   height: 100%;
 }
 
-.nav-tabs>li>a{
+.nav-tabs>li>a {
   color: #333;
   background-color: #fff;
 }
 
-.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
+.nav-tabs>li.active>a,
+.nav-tabs>li.active>a:focus,
+.nav-tabs>li.active>a:hover {
   color: #fff;
   cursor: default;
   background-color: #333;
@@ -50,26 +52,28 @@ footer {
   flex-direction: row-reverse;
 }
 
-#products>a:hover{
+#products>a:hover {
   color: rgb(145, 145, 145);
 }
 
-.add, .save{
+.add,
+.save {
   background-color: #333;
   color: #fff;
   border-color: #333;
   position: relative;
 }
 
-.add{
+.add {
   margin-bottom: 1rem;
 }
 
-.dataTables_wrapper{
+.dataTables_wrapper {
   margin: 0 0 2rem 0;
 }
 
-.add:hover, .save:hover{
+.add:hover,
+.save:hover {
   color: gray;
 }
 
@@ -87,11 +91,11 @@ footer {
   margin-bottom: 0.5rem;
 }
 
-.form-control.form-control-sm{
+.form-control.form-control-sm {
   width: auto;
 }
 
-img.img-style{
+img.img-style {
   display: flex;
   margin-left: auto;
   margin-right: auto;
@@ -108,11 +112,21 @@ button.bag {
 }
 
 button.filters {
-    font-size: 3rem;
+  font-size: 3rem;
 }
 
-div.dataTables_length{
+div.dataTables_length {
   margin-bottom: 1rem;
+}
+
+.tab-content>.active {
+  display: grid;
+}
+
+#pagination-container {
+  margin: auto;
+  display: ruby-text;
+  position: relative;
 }
 
 #cart-container {
@@ -130,12 +144,9 @@ div.dataTables_length{
   padding: 20px;
 }
 
-@media screen and (max-width: 769px){
-  .filters{
+@media screen and (max-width: 769px) {
+  .filters {
     position: fixed;
     display: contents;
   }
 }
-
-
-

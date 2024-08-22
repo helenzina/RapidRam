@@ -1,20 +1,17 @@
 <?php
-
 session_start();
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if ($_POST["password"] === "1234" && $_POST["username"] === "admin") {
-        $_SESSION["username"] = $_POST["username"];
-        $_SESSION["password"] = $_POST["password"];
-    } else {
-        header("Location: index.php");
-        exit();
-    }
+if (empty($_SESSION['username'])) {
+    header("Location: index.php");
+    exit;
 }
 
-if (empty($_SESSION["username"])) {
+if (isset($_POST['logout'])) {
+    session_destroy();
+    $_SESSION = array();
+    echo "<script>alert('Logging out...')</script>";
     header("Location: index.php");
-    exit();
+    exit;
 }
 
 $mysqli = require __DIR__ . "/conn.php";
@@ -54,12 +51,14 @@ $mysqli->close();
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css" />
+    <link rel="icon" href="../ram.svg">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
@@ -126,14 +125,15 @@ $mysqli->close();
                             <div class="row">
                                 <div class="col-md-6">
                                     <!-- Chart canvas will be placed here -->
-                                    <canvas id="salesChart" width="100rem" height="74rem" style="display: flex;"></canvas>
+                                    <canvas id="salesChart" width="100rem" height="74rem"
+                                        style="display: flex;"></canvas>
                                 </div>
                             </div>
                         </div>
                         <!-- Logout admin -->
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <form action="index.php" method="post">
-                                <button type="submit" class="btn btn-dark add logout pull-right">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end justify-content-end">
+                            <form method="post">
+                                <button type="submit" name="logout" class="btn btn-dark add logout pull-right">
                                     Logout
                                 </button>
                             </form>
@@ -404,19 +404,19 @@ $mysqli->close();
                                 </tr>
                             </thead>
                             <tbody>
-                            <?php foreach ($orders as $order): ?>
-                                <tr>
-                                    <th scope="row"><?php echo $order['id']; ?></th>
-                                    <td><?php echo $order['firstname']; ?></td>
-                                    <td><?php echo $order['lastname']; ?></td>
-                                    <td><?php echo $order['email']; ?></td>
-                                    <td><?php echo $order['tel']; ?></td>
-                                    <td><?php echo $order['delivery_address']; ?></td>
-                                    <td><?php echo $order['products']; ?></td>
-                                    <td><?php echo $order['total']; ?></td>
-                                    <td>Delivered</td>
-                                </tr>
-                            <?php endforeach; ?>
+                                <?php foreach ($orders as $order): ?>
+                                    <tr>
+                                        <th scope="row"><?php echo $order['id']; ?></th>
+                                        <td><?php echo $order['firstname']; ?></td>
+                                        <td><?php echo $order['lastname']; ?></td>
+                                        <td><?php echo $order['email']; ?></td>
+                                        <td><?php echo $order['tel']; ?></td>
+                                        <td><?php echo $order['delivery_address']; ?></td>
+                                        <td><?php echo $order['products']; ?></td>
+                                        <td><?php echo $order['total']; ?></td>
+                                        <td>Delivered</td>
+                                    </tr>
+                                <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>
@@ -424,8 +424,7 @@ $mysqli->close();
             </div>
         </div>
     </div>
-
-    <footer class="container-fluid text-center">
+    <footer class="container-fluid text-center admin">
         <h6 class="text-uppercase mb-4 font-weight-bold">Contact</h6>
         <p><i class="bi bi-house-fill"></i> New York, NY 10012, US</p>
         <p><i class="bi bi-envelope-fill"></i> rapidram@info.com</p>
