@@ -42,9 +42,9 @@ RapidRam is an e-shop that allows users to purchase different types of ram and i
    C:\xampp\htdocs
    ```
    
-3. Clone the repo
+3. **Clone the repo**.
    ```sh
-   gh repo clone helenzina/RapidRam
+   git clone https://github.com/helenzina/RapidRam
    ```
 
 4. **Connect as a localhost by typing the following command in the URL section of your browser**:
@@ -140,10 +140,4 @@ If you have any questions or suggestions, feel free to reach out to me:
 
  ## Acknowledgments
 
-The resources that helped me through this whole process were the following:
-
-- [HTML](https://www.w3schools.com/html/)
-- [CSS](https://www.w3schools.com/css/)
-- [Bootstrap](https://www.w3schools.com/bootstrap5/index.php)
-- [JavaScript](https://www.w3schools.com/js/)
-- [PHP](https://www.w3schools.com/php/)
+The resources that helped me through this whole process were from the technologies websites I used.
