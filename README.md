@@ -1,5 +1,4 @@
 <div align="center">
-<img src="https://github.com/helenzina/RapidRam/blob/main/ram.svg"/>
 <h3 align="center">RapidRam</h3>
 <p align="center">
 RAM E-shop
@@ -23,7 +22,7 @@ This project was built with the following:
  ## About The Project
  
 <p align="center">
-<img src="https://github.com/helenzina/RapidRam/blob/main/run.gif"  title="run"/>
+<img src="https://github.com/helenzina/RapidRam/tree/main/images/index.jpg"  title="index"/>
 </p>
 
 RapidRam is an e-shop that allows users to purchase different types of RAM and in large quantities, if they like. The purpose of this project was for practising CRUD operations in PHP through an administration panel.
@@ -70,6 +69,7 @@ RapidRam is an e-shop that allows users to purchase different types of RAM and i
 
 ### Security & more:
 - Responsive web design.
+- Validation for credentials in the order checkout.
 - **Administration panel**:
   - Login using admin credentials.
   - View the dashboard (business sales), products panel and orders panel.
@@ -107,18 +107,70 @@ Here are some screenshots of the web application running showing the features me
 <table>
   <tr>
     <td>
-    Game and tiles configuration
-     <img src="https://github.com/helenzina/Game-Generator/blob/main/screenshots/json_1.png" title="json_1"/>
+    Index page
+     <img src="https://github.com/helenzina/RapidRam/tree/main/images/index.jpg" title="index"/>
     </td>
     <td>
-    Cards configuration
-     <img src="https://github.com/helenzina/Game-Generator/blob/main/screenshots/json_2.png" title="json_2"/>
+    Products page (1)
+     <img src="https://github.com/helenzina/RapidRam/tree/main/images/products_1.jpg" title="products_1"/>
     </td>
     <td>
-    Rules configuration
-     <img src="https://github.com/helenzina/Game-Generator/blob/main/screenshots/json_3.png" title="json_3"/>
+    Products page (2)
+     <img src="https://github.com/helenzina/RapidRam/tree/main/images/products_2.jpg" title="products_2"/>
     </td>
-</tr>
+  </tr>
+  <tr>
+    <td>
+    Filters
+     <img src="https://github.com/helenzina/RapidRam/tree/main/images/filters.jpg" title="filters"/>
+    </td>
+    <td>
+    Shopping cart
+     <img src="https://github.com/helenzina/RapidRam/tree/main/images/shopping_cart.jpg" title="shopping_cart"/>
+    </td>
+    <td>
+    Order checkout
+     <img src="https://github.com/helenzina/RapidRam/tree/main/images/order_checkout.jpg" title="order_checkout"/>
+    </td>
+    <td>
+    Validation example
+     <img src="https://github.com/helenzina/RapidRam/tree/main/images/validation_example.jpg" title="validation_example"/>
+    </td>   
+    <td>
+    Order confirmation
+     <img src="https://github.com/helenzina/RapidRam/tree/main/images/order_confirmation.jpg" title="order_confirmation"/>
+    </td>      
+  </tr>
+  <tr>
+    <td>
+    Admin panel
+     <img src="https://github.com/helenzina/RapidRam/tree/main/images/admin_panel.jpg" title="admin_panel"/>
+    </td>
+    <td>
+    Dashboard
+     <img src="https://github.com/helenzina/RapidRam/tree/main/images/dashboard.jpg" title="dashboard"/>
+    </td>
+    <td>
+    Products panel
+     <img src="https://github.com/helenzina/RapidRam/tree/main/images/products_panel.jpg" title="products_panel"/>
+    </td>
+    <td>
+    Products panel - Add product
+     <img src="https://github.com/helenzina/RapidRam/tree/main/images/add_product.jpg" title="add_product"/>
+    </td>   
+    <td>
+    Products panel - Edit product
+     <img src="https://github.com/helenzina/RapidRam/tree/main/images/edit_product.jpg" title="edit_product"/>
+    </td>      
+    <td>
+    Products panel - Delete product
+     <img src="https://github.com/helenzina/RapidRam/tree/main/images/delete_product.jpg" title="delete_product"/>
+    </td>      
+    <td>
+    Orders panel
+     <img src="https://github.com/helenzina/RapidRam/tree/main/images/orders_panel.jpg" title="orders_panel"/>
+    </td>      
+  </tr> 
 </table>
 
 
@@ -131,7 +183,7 @@ Here are some screenshots of the web application running showing the features me
 
 <td align="center">
 <a href="https://github.com/helenzina">
-<img src="https://avatars.githubusercontent.com/u/128386591?v=4" width="100;" alt="Helen Zina"/><br>
+<img src="https://avatars.githubusercontent.com/u/128386591?v=4" width=100 alt="Helen Zina"/><br>
 <sub>
 <b>Helen Zina (Me)</b>
 </sub>
