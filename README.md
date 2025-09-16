@@ -22,7 +22,7 @@ This project was built with the following:
  ## About The Project
  
 <p align="center">
-<img src="https://github.com/helenzina/RapidRam/tree/main/images/index.jpg"  title="index"/>
+<img src="https://github.com/helenzina/RapidRam/blob/main/images/index.jpg"  title="index"/>
 </p>
 
 RapidRam is an e-shop that allows users to purchase different types of RAM and in large quantities, if they like. The purpose of this project was for practising CRUD operations in PHP through an administration panel.
@@ -108,71 +108,72 @@ Here are some screenshots of the web application running showing the features me
   <tr>
     <td>
     Index page
-     <img src="https://github.com/helenzina/RapidRam/tree/main/images/index.jpg" title="index"/>
+     <img src="https://github.com/helenzina/RapidRam/blob/main/images/index.jpg" title="index"/>
     </td>
     <td>
     Products page (1)
-     <img src="https://github.com/helenzina/RapidRam/tree/main/images/products_1.jpg" title="products_1"/>
+     <img src="https://github.com/helenzina/RapidRam/blob/main/images/products_1.jpg" title="products_1"/>
     </td>
     <td>
     Products page (2)
-     <img src="https://github.com/helenzina/RapidRam/tree/main/images/products_2.jpg" title="products_2"/>
+     <img src="https://github.com/helenzina/RapidRam/blob/main/images/products_2.jpg" title="products_2"/>
     </td>
   </tr>
   <tr>
     <td>
     Filters
-     <img src="https://github.com/helenzina/RapidRam/tree/main/images/filters.jpg" title="filters"/>
+     <img src="https://github.com/helenzina/RapidRam/blob/main/images/filters.jpg" title="filters"/>
     </td>
     <td>
     Shopping cart
-     <img src="https://github.com/helenzina/RapidRam/tree/main/images/shopping_cart.jpg" title="shopping_cart"/>
+     <img src="https://github.com/helenzina/RapidRam/blob/main/images/shopping_cart.jpg" title="shopping_cart"/>
     </td>
     <td>
     Order checkout
-     <img src="https://github.com/helenzina/RapidRam/tree/main/images/order_checkout.jpg" title="order_checkout"/>
+     <img src="https://github.com/helenzina/RapidRam/blob/main/images/order_checkout.jpg" title="order_checkout"/>
     </td>
     <td>
     Validation example
-     <img src="https://github.com/helenzina/RapidRam/tree/main/images/validation_example.jpg" title="validation_example"/>
+     <img src="https://github.com/helenzina/RapidRam/blob/main/images/validation_example.jpg" title="validation_example"/>
     </td>   
     <td>
     Order confirmation
-     <img src="https://github.com/helenzina/RapidRam/tree/main/images/order_confirmation.jpg" title="order_confirmation"/>
+     <img src="https://github.com/helenzina/RapidRam/blob/main/images/order_confirmation.jpg" title="order_confirmation"/>
     </td>      
   </tr>
   <tr>
     <td>
     Admin panel
-     <img src="https://github.com/helenzina/RapidRam/tree/main/images/admin_panel.jpg" title="admin_panel"/>
+     <img src="https://github.com/helenzina/RapidRam/blob/main/images/admin_panel.jpg" title="admin_panel"/>
     </td>
     <td>
     Dashboard
-     <img src="https://github.com/helenzina/RapidRam/tree/main/images/dashboard.jpg" title="dashboard"/>
+     <img src="https://github.com/helenzina/RapidRam/blob/main/images/dashboard.jpg" title="dashboard"/>
     </td>
     <td>
     Products panel
-     <img src="https://github.com/helenzina/RapidRam/tree/main/images/products_panel.jpg" title="products_panel"/>
+     <img src="https://github.com/helenzina/RapidRam/blob/main/images/products_panel.jpg" title="products_panel"/>
     </td>
     <td>
     Products panel - Add product
-     <img src="https://github.com/helenzina/RapidRam/tree/main/images/add_product.jpg" title="add_product"/>
+     <img src="https://github.com/helenzina/RapidRam/blob/main/images/add_product.jpg" title="add_product"/>
     </td>   
     <td>
     Products panel - Edit product
-     <img src="https://github.com/helenzina/RapidRam/tree/main/images/edit_product.jpg" title="edit_product"/>
+     <img src="https://github.com/helenzina/RapidRam/blob/main/images/edit_product.jpg" title="edit_product"/>
     </td>      
     <td>
     Products panel - Delete product
-     <img src="https://github.com/helenzina/RapidRam/tree/main/images/delete_product.jpg" title="delete_product"/>
+     <img src="https://github.com/helenzina/RapidRam/blob/main/images/delete_product.jpg" title="delete_product"/>
     </td>      
     <td>
     Orders panel
-     <img src="https://github.com/helenzina/RapidRam/tree/main/images/orders_panel.jpg" title="orders_panel"/>
+     <img src="https://github.com/helenzina/RapidRam/blob/main/images/orders_panel.jpg" title="orders_panel"/>
     </td>      
   </tr> 
 </table>
 
+For a closer look, click on the images and open them from the **images** folder.
 
  
 ## Collaborators
