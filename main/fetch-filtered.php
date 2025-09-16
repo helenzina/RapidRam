@@ -1,70 +1,81 @@
 <?php
 require __DIR__ . "/conn.php";
 
-$query = "SELECT * FROM ram";
+$query = "SELECT SQL_CALC_FOUND_ROWS * FROM ram";
 $whereClause = array();
+$params = array();
+$types = '';
 
-// List of filterable fields
 $filterFields = ['capacity', 'channel', 'speed'];
 
 foreach ($filterFields as $field) {
     if (isset($_POST[$field])) {
         $filterValue = $_POST[$field];
         if (is_array($filterValue)) {
-            $filterValue = implode(',', $filterValue);
-            $whereClause[] = "$field IN ($filterValue)";
+            $placeholders = implode(',', array_fill(0, count($filterValue), '?'));
+            $whereClause[] = "$field IN ($placeholders)";
+            $params = array_merge($params, $filterValue);
+            $types .= str_repeat('i', count($filterValue));
         } else {
-            $whereClause[] = "$field = $filterValue";
+            $whereClause[] = "$field = ?";
+            $params[] = $filterValue;
+            $types .= 'i';
         }
     }
 }
 
-// Check if price range filter is set
 if (isset($_POST['minPrice']) && isset($_POST['maxPrice'])) {
     $minPrice = $_POST['minPrice'];
     $maxPrice = $_POST['maxPrice'];
-    $whereClause[] = "price BETWEEN $minPrice AND $maxPrice";
+    $whereClause[] = "price BETWEEN ? AND ?";
+    $params[] = $minPrice;
+    $params[] = $maxPrice;
+    $types .= 'ii';
 }
 
 if (!empty($whereClause)) {
     $query .= " WHERE " . implode(" AND ", $whereClause);
 }
 
-// Execute the query after applying filters
-$result = $mysqli->query($query);
+// Pagination
+$page = isset($_POST['page']) ? (int)$_POST['page'] : 1;
+$rows_per_page = 12;
+$offset = ($page - 1) * $rows_per_page;
 
-if ($result->num_rows > 0) {
-    $rows = $result->fetch_all(MYSQLI_ASSOC);
+$query .= " LIMIT ?, ?";
+$params[] = $offset;
+$params[] = $rows_per_page;
+$types .= 'ii';
 
-    // Pagination
-    $rows_per_page = 12;
-    $total_pages = ceil(count($rows) / $rows_per_page);
+$stmt = $mysqli->prepare($query);
 
-    // Get current page from the URL
-    $page = isset($_GET['page']) ? $_GET['page'] : 1;
-    $page = max(1, min($page, $total_pages));
-
-    // Calculate the offset for fetching rows
-    $start = ($page - 1) * $rows_per_page;
-
-    // Modify the query to include the LIMIT clause
-    $query .= " LIMIT $start, $rows_per_page";
-
-    $result = $mysqli->query($query);
-
-    if ($result->num_rows > 0) {
-        $rows = $result->fetch_all(MYSQLI_ASSOC);
-    } else {
-        $rows = array();
-    }
-} else {
-    $rows = array();
-    echo '<script>
-    alert("No products were found with these filters.");
-    window.location.href = "products.php?clear=true";
-    </script>';
+if ($stmt === false) {
+    die('Prepare failed: ' . $mysqli->error);
 }
 
+if (!empty($params)) {
+    $stmt->bind_param($types, ...$params);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
+
+$rows = [];
+if ($result->num_rows > 0) {
+    $rows = $result->fetch_all(MYSQLI_ASSOC);
+}
+
+// Get total number of items without pagination
+$totalResult = $mysqli->query("SELECT FOUND_ROWS() as total");
+$totalItems = $totalResult->fetch_assoc()['total'];
+
+$stmt->close();
+
 header('Content-Type: application/json');
-echo json_encode($rows);
+echo json_encode([
+    'products' => $rows,
+    'total' => $totalItems,
+    'currentPage' => $page,
+    'rowsPerPage' => $rows_per_page
+]);
 ?>

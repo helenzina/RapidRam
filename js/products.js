@@ -3,22 +3,40 @@ document.addEventListener("DOMContentLoaded", async function () {
     const totalSpan = document.getElementById("total");
     const cartList = document.getElementById("cart");
     const paginationContainer = document.getElementById("pagination-container");
+    const filtersForm = document.getElementById("filters");
+    const clearBtn = document.querySelector(".clear");
     let currentPage = 1;
     const itemsPerPage = 12;
     let total = 0;
     const productQuantities = {};
+    let allProducts = [];
+    let filteredProducts = [];
 
-    // Function to fetch product data from PHP
-    async function fetchProducts() {
+    // Function to fetch all products
+    async function fetchAllProducts() {
         const response = await fetch('fetch-products.php');
-        const products = await response.json();
-        return products;
+        const allProducts = await response.json();
+        return allProducts;
     }
 
-    async function fetchFiltered() {
-        const response = await fetch('fetch-filtered.php');
-        const filtered = await response.json();
-        return filtered;
+    // Function to fetch filtered products
+    async function fetchFilteredProducts(formData, page = 1) {
+        formData.append('page', page);
+        formData.append('itemsPerPage', itemsPerPage);
+
+        const response = await fetch('fetch-filtered.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (response.ok) {
+            filteredProducts = await response.json();
+            currentPage = filteredProducts.currentPage;
+            displayProducts(filteredProducts.products);
+            renderPagination(filteredProducts.total);
+        } else {
+            console.error('Failed to fetch products');
+        }
     }
 
     // Function to build and display product cards
@@ -29,8 +47,15 @@ document.addEventListener("DOMContentLoaded", async function () {
         const endIndex = startIndex + itemsPerPage;
         const paginatedProducts = products.slice(startIndex, endIndex);
 
-        paginatedProducts.forEach(product => {
-            const productHTML = `
+        if (paginatedProducts.length === 0 && products.length === 0) {
+            productContainer.innerHTML = `
+            <div class="nofound">
+                <p style="font-weight: bold;">No products were found with these filters.</p>
+            </div>
+            `;
+        } else {
+            paginatedProducts.forEach(product => {
+                const productHTML = `
                 <div class="col-sm-3 mb-2">
                     <div class="card" style="border-color: black;">
                         <img src="../images/${product.photo}" class="card-img-top"
@@ -63,26 +88,28 @@ document.addEventListener("DOMContentLoaded", async function () {
                     </div>
                 </div>
             `;
-            productContainer.insertAdjacentHTML('beforeend', productHTML);
-        });
+                productContainer.insertAdjacentHTML('beforeend', productHTML);
+            });
 
-        addEventListeners();
+            addEventListeners();
+        }
         renderPagination(products.length);
+        
     }
 
     function renderPagination(totalItems) {
         paginationContainer.innerHTML = ''; // Clear existing pagination controls
-    
+
         const totalPages = Math.ceil(totalItems / itemsPerPage);
-    
+
         // Create the navigation element
         const navigation = document.createElement('nav');
         navigation.setAttribute('aria-label', 'Page navigation example');
-    
+
         // Create the pagination list
         const paginationList = document.createElement('ul');
         paginationList.classList.add('pagination');
-    
+
         // Create the "Previous" button
         const prevItem = document.createElement('li');
         prevItem.classList.add('page-item');
@@ -94,11 +121,17 @@ document.addEventListener("DOMContentLoaded", async function () {
             e.preventDefault();
             if (currentPage > 1) {
                 currentPage--;
-                displayProducts(products);
+
+                data = new FormData(filtersForm);
+                if (data.length > 0) {
+                    fetchFilteredProducts(data, currentPage - 1);
+                } else {
+                    displayProducts(allProducts);
+                }
             }
         });
         paginationList.appendChild(prevItem);
-    
+
         // Create the page number buttons
         for (let i = 1; i <= totalPages; i++) {
             const pageItem = document.createElement('li');
@@ -110,11 +143,17 @@ document.addEventListener("DOMContentLoaded", async function () {
             pageItem.addEventListener('click', (e) => {
                 e.preventDefault();
                 currentPage = i;
-                displayProducts(products);
+
+                data = new FormData(filtersForm);
+                if (data.length > 0) {
+                    fetchFilteredProducts(data, i);
+                } else {
+                    displayProducts(allProducts);
+                }
             });
             paginationList.appendChild(pageItem);
         }
-    
+
         // Create the "Next" button
         const nextItem = document.createElement('li');
         nextItem.classList.add('page-item');
@@ -126,18 +165,43 @@ document.addEventListener("DOMContentLoaded", async function () {
             e.preventDefault();
             if (currentPage < totalPages) {
                 currentPage++;
-                displayProducts(products);
+                
+                data = new FormData(filtersForm);
+                if (data.length > 0) {
+                    fetchFilteredProducts(data, currentPage + 1);
+                } else {
+                    displayProducts(allProducts);
+                }
             }
         });
         paginationList.appendChild(nextItem);
-    
+
         // Append the pagination list to the navigation
         navigation.appendChild(paginationList);
-    
+
         // Append the navigation to the pagination container
         paginationContainer.appendChild(navigation);
     }
-    
+
+    // Function to save cart to local storage
+    async function saveCartToLocalStorage() {
+        const cartItems = Array.from(cartList.children).map(item => ({
+            product: item.dataset.product,
+            price: parseFloat(item.dataset.price),
+            quantity: parseInt(item.querySelector(".quantity").textContent),
+        }));
+
+        localStorage.setItem('cart', JSON.stringify(cartItems));
+    }
+
+    // Function to load cart from local storage
+    function loadCartFromLocalStorage() {
+        const cartItems = JSON.parse(localStorage.getItem('cart') || '[]');
+       
+        cartItems.forEach(item => {
+            updateCart(item.product, item.price, item.quantity);
+        });
+    }
 
     // Function to update the cart
     function updateCart(product, price, quantity) {
@@ -174,27 +238,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         total += price * quantity;
         totalSpan.textContent = new Intl.NumberFormat().format(total);
 
+        // Save the cart to local storage
+        saveCartToLocalStorage();
+
         // Update checkout information
         updateCheckout();
-        // Update the cart array in the session
-        updateSessionCart();
-    }
-
-    // Function to update the cart array in the session
-    async function updateSessionCart() {
-        const cartItems = Array.from(cartList.children).map(item => ({
-            product: item.dataset.product,
-            price: parseFloat(item.dataset.price),
-            quantity: parseInt(item.querySelector(".quantity").textContent),
-        }));
-
-        await fetch('update-cart.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ cartItems }),
-        });
     }
 
     // Function to update checkout modal
@@ -219,7 +267,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Add event listeners to dynamically added elements
     function addEventListeners() {
-        document.querySelectorAll('.add-to-cart').forEach(button => {
+        productContainer.querySelectorAll('.add-to-cart').forEach(button => {
             button.addEventListener('click', () => {
                 const product = button.getAttribute('data-product');
                 const price = parseFloat(button.getAttribute('data-price'));
@@ -231,7 +279,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             });
         });
 
-        document.addEventListener("click", function (event) {
+        cartList.addEventListener("click", function (event) {
             const listItem = event.target.closest('li');
             if (!listItem) return; // If there's no closest li, do nothing
 
@@ -256,8 +304,29 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             totalSpan.textContent = new Intl.NumberFormat().format(total);
 
+            saveCartToLocalStorage();
             updateCheckout();
-            updateSessionCart();
+        });
+
+        // Event listener for form submission
+        filtersForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            currentPage = 1;
+
+            const data = new FormData(filtersForm);
+            fetchFilteredProducts(data, currentPage);
+            renderPagination(data.length);
+        });
+
+        // Event listener for clearing filters
+        clearBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            filtersForm.reset();
+
+            currentPage = 1;
+
+            displayProducts(allProducts);
         });
     }
 
@@ -266,8 +335,11 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     // Load and display products
-    const products = await fetchProducts();
-    displayProducts(products);
+    allProducts = await fetchAllProducts();
+    displayProducts(allProducts);
+
+    // Load cart from local storage
+    loadCartFromLocalStorage();
 });
 
 function onChangeEmail() {
@@ -283,7 +355,7 @@ function onChangeEmail() {
 
 function onChangeTel() {
     const tel = document.querySelector('input[name=tel]');
-    const telPattern= /[0-9]{10}/;
+    const telPattern = /[0-9]{10}/;
 
     if (tel.value.match(telPattern)) {
         tel.setCustomValidity('');

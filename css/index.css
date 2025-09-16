@@ -123,10 +123,11 @@ div.dataTables_length {
   display: grid;
 }
 
-#pagination-container {
+#pagination-container, .nofound {
   margin: auto;
-  display: ruby-text;
+  display: flex;
   position: relative;
+  justify-content: center;
 }
 
 #cart-container {

@@ -34,22 +34,19 @@ if (isset($_POST['login'])) {
 
 // Handle filter form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $_SESSION['filter_params'] = $_POST;
+    $_SESSION['filters'] = $_POST;
     header("Location: " . $_SERVER['PHP_SELF'] . "?page=1");
     exit();
-} elseif (isset($_SESSION['filter_params'])) {
-    $_POST = $_SESSION['filter_params'];
+} elseif (isset($_SESSION['filters'])) {
+    $_POST = $_SESSION['filters'];
 }
 
 // Clear filters
-if (isset($_GET['clear'])) {
-    $_SESSION['filter_params'] = NULL;
+if (isset($_GET['clear']) && $_GET['clear'] === 'true') {
+    unset($_SESSION['filters']);
     header('Location: products.php');
     exit();
 }
-
-
-
 ?>
 
 
@@ -242,10 +239,10 @@ if (isset($_GET['clear'])) {
             </div>
 
             <div class="offcanvas-body">
-                <form id="filters" action="<?php echo $_SERVER['PHP_SELF'] . '?page=' . $page; ?>" method="post">
+                <form id="filters" action="<?php echo $_SERVER['PHP_SELF'] . "?page=" . $page; ?>" method="post">
 
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end clear">
                             <a href="products.php?clear=true" class="btn btn-light"
                                 style="color: blue; background-color: transparent;">Clear</a>
                         </div>
@@ -334,11 +331,7 @@ if (isset($_GET['clear'])) {
                     </div>
                 </div>
                 <div class="container" id="pagination-container">
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination justify-content-center">
-                            <!-- Pagination will be added here dynamically -->
-                        </ul>
-                    </nav>
+
                 </div>
             </main>
         </div>
