@@ -26,7 +26,7 @@ This project was built with the following:
 <img src="https://github.com/helenzina/RapidRam/blob/main/run.gif"  title="run"/>
 </p>
 
-RapidRam is an e-shop that allows users to purchase different types of ram and in large quantities, if they like. The purpose of this project was for practising CRUD operations in PHP through an administration panel.
+RapidRam is an e-shop that allows users to purchase different types of RAM and in large quantities, if they like. The purpose of this project was for practising CRUD operations in PHP through an administration panel.
 
 
 
@@ -42,9 +42,9 @@ RapidRam is an e-shop that allows users to purchase different types of ram and i
    C:\xampp\htdocs
    ```
    
-3. Clone the repo
+3. **Clone the repo**.
    ```sh
-   gh repo clone helenzina/RapidRam
+   git clone https://github.com/helenzina/RapidRam
    ```
 
 4. **Connect as a localhost by typing the following command in the URL section of your browser**:
@@ -60,9 +60,22 @@ RapidRam is an e-shop that allows users to purchase different types of ram and i
 
  ## Features
 ### Users can
+- View information about different RAM modules from different vendors, including capacity, channel, and speed.
+- Purchase RAM through deals or through the products page by adding items in their cart.
+- Change the quantity of the added RAM in cart or remove it.
+- Apply filters to search RAM modules based on either capacity, channel, speed or price range.
+- Place their order by submitting their credentials.
+- Display the added products before submitting their order, as well as the total cost.
+- Cancel their order and modify the added products.
 
-- 
-
+### Security & more:
+- Responsive web design.
+- **Administration panel**:
+  - Login using admin credentials.
+  - View the dashboard (business sales), products panel and orders panel.
+  - In the products panel, information can be displayed for each available product in the website either through search or navigation.
+  - Add, edit or delete a product in the products panel.
+  - In the orders panel, orders can be displayed including their information and status.
 
 ## How To Run
 
@@ -140,10 +153,4 @@ If you have any questions or suggestions, feel free to reach out to me:
 
  ## Acknowledgments
 
-The resources that helped me through this whole process were the following:
-
-- [HTML](https://www.w3schools.com/html/)
-- [CSS](https://www.w3schools.com/css/)
-- [Bootstrap](https://www.w3schools.com/bootstrap5/index.php)
-- [JavaScript](https://www.w3schools.com/js/)
-- [PHP](https://www.w3schools.com/php/)
+The resources that helped me through this whole process were from the technologies websites I used.
