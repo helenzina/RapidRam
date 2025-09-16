@@ -71,7 +71,7 @@ RapidRam is an e-shop that allows users to purchase different types of RAM and i
 ### Security & more:
 - Responsive web design.
 - Validation for credentials in the order checkout.
-- Applying filters and adding to cart using AJAX while communicating with the Apache server.
+- Applying filters and adding to cart dynamically using AJAX while communicating with the Apache server through XAMPP.
 - **Administration panel**:
   - Login using admin credentials.
   - View the dashboard (business sales), products panel and orders panel.
