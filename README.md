@@ -61,6 +61,7 @@ RapidRam is an e-shop that allows users to purchase different types of RAM and i
 ### Users can
 - View information about different RAM modules from different vendors, including capacity, channel, and speed.
 - Purchase RAM through deals or through the products page by adding items in their cart.
+- Navigate through products using pagination.
 - Change the quantity of the added RAM in cart or remove it.
 - Apply filters to search RAM modules based on either capacity, channel, speed or price range.
 - Place their order by submitting their credentials.
@@ -74,7 +75,7 @@ RapidRam is an e-shop that allows users to purchase different types of RAM and i
   - Login using admin credentials.
   - View the dashboard (business sales), products panel and orders panel.
   - In the products panel, information can be displayed for each available product in the website either through search or navigation.
-  - Add, edit or delete a product in the products panel.
+  - Add, edit or delete a product in the products panel (CRUD operations).
   - In the orders panel, orders can be displayed including their information and status.
 
 ## How To Run
